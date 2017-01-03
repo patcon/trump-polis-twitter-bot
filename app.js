@@ -1,6 +1,8 @@
 var express = require('express');
+var fs      = require('fs');
 var Swagger = require('swagger-client');
 var Twitter = require('twitter');
+
 _ = require('lodash');
 
 var app = express();
@@ -12,7 +14,7 @@ const POLIS_API_KEY = process.env.POLIS_API_KEY;
 
 if (!POLIS_API_KEY) {
   throw 'ApiKeyMissingError';
-};
+}
 
 const isStandardTweet = _.conforms({
   id_str: _.isString,
@@ -38,12 +40,16 @@ var polisClient = new Swagger({
   },
 });
 
+function polisDescription(callback) {
+  return fs.readFileSync('description.md', 'utf8');
+}
+
 var stream = twitClient.stream('statuses/filter', {follow: TWITTER_ID});
 stream.on('data', function(event) {
   if(isStandardTweet(event) && isTrumpTweet(event)) {
     var newPolisConvo = {
-      topic: event.text,
-      description: 'Some bit of explanatory **markdown**! _Italics!_',
+      topic: '"{}"'.format(event.text),
+      description: polisDescription(),
     };
     polisClient.Conversations.createConversation(newPolisConvo, function(success) {
         var newTweet = {
