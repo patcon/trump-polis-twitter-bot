@@ -1,5 +1,8 @@
+var express = require('express');
 var Twitter = require('twitter');
 _ = require('lodash');
+
+var app = express();
 
 // For @RealDonaldTrump
 const TRUMP_ID=25073877
@@ -55,3 +58,12 @@ function makeFakeId() {
 
   return text;
 }
+
+app.get('/', function(req, res) {
+  res.send('trump-twitter-bot');
+});
+
+var port = process.env.PORT || 3000;
+app.listen(port, function() {
+  console.log('App listening on port ' + port)
+});
