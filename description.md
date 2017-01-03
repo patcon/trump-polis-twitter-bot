@@ -4,7 +4,7 @@ I bet you're wondering why I've called this meeting.
 Short answer: Because Twitter threads make my head, heart and soul hurt.
 And it worries me a little bit.
 Aaaand I think you probably agree.
-As some guy on [Twitter once said](https://twitter.com/worrydream/status/768994815442694144):
+As some guy on Twitter [once said](https://twitter.com/worrydream/status/768994815442694144):
 
 > _If you want a vision of the future, imagine a million tweets talking past one other, forever._
 
