@@ -2,7 +2,8 @@ var Twitter = require('twitter');
 _ = require('lodash');
 
 // For @RealDonaldTrump
-const TWITTER_ID = parseInt(process.env.TWITTER_NUM_ID);
+const TRUMP_ID=25073877
+const TWITTER_ID = parseInt(process.env.TWITTER_NUM_ID) || TRUMP_ID;
 
 const isStandardTweet = _.conforms({
   id_str: _.isString,
