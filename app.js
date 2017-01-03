@@ -1,4 +1,36 @@
 var Twitter = require('twitter');
+_ = require('lodash');
+
+// For @RealDonaldTrump
+const TWITTER_ID = process.env.TWITTER_NUM_ID;
+
+const isStandardTweet = _.conforms({
+  contributors: _.isObject,
+  id_str: _.isString,
+  text: _.isString,
+})
+
+function isTrumpTweet(event) {
+  return event.user.id == TWITTER_ID;
+}
+
+var client = new Twitter({
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+});
+
+var stream = client.stream('statuses/filter', {follow: TWITTER_ID});
+stream.on('data', function(event) {
+  if(isStandardTweet(event) && isTrumpTweet(event)) {
+    console.log(event);
+  };
+});
+
+stream.on('error', function(error) {
+  throw error;
+});
 
 const TWEET_TEMPLATE = "@RealDonaldTrump Hey all, this might be a better way to discuss our differences on this tweet: https://pol.is/{} Beep-boop. I'm a bot."
 
@@ -23,5 +55,3 @@ function makeFakeId() {
 
   return text;
 }
-
-console.log(generateTweet(makeFakeId()));
