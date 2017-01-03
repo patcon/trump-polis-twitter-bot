@@ -2,13 +2,12 @@ var Twitter = require('twitter');
 _ = require('lodash');
 
 // For @RealDonaldTrump
-const TWITTER_ID = process.env.TWITTER_NUM_ID;
+const TWITTER_ID = parseInt(process.env.TWITTER_NUM_ID);
 
 const isStandardTweet = _.conforms({
-  contributors: _.isObject,
   id_str: _.isString,
   text: _.isString,
-})
+});
 
 function isTrumpTweet(event) {
   return event.user.id == TWITTER_ID;
@@ -25,7 +24,7 @@ var stream = client.stream('statuses/filter', {follow: TWITTER_ID});
 stream.on('data', function(event) {
   if(isStandardTweet(event) && isTrumpTweet(event)) {
     console.log(event);
-  };
+  }
 });
 
 stream.on('error', function(error) {
@@ -39,7 +38,7 @@ String.prototype.format = function () {
   return this.replace(/{}/g, function () {
     return typeof args[i] != 'undefined' ? args[i++] : '';
   });
-};
+}
 
 function generateTweet(conversationId) {
   return TWEET_TEMPLATE.format(conversationId);
