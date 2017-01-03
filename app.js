@@ -1,4 +1,5 @@
 var express = require('express');
+var Swagger = require('swagger-client');
 var Twitter = require('twitter');
 _ = require('lodash');
 
@@ -7,6 +8,11 @@ var app = express();
 // For @RealDonaldTrump
 const TRUMP_ID=25073877;
 const TWITTER_ID = parseInt(process.env.TWITTER_NUM_ID) || TRUMP_ID;
+const POLIS_API_KEY = process.env.POLIS_API_KEY;
+
+if (!POLIS_API_KEY) {
+  throw 'ApiKeyMissingError';
+};
 
 const isStandardTweet = _.conforms({
   id_str: _.isString,
@@ -17,23 +23,39 @@ function isTrumpTweet(event) {
   return event.user.id == TWITTER_ID;
 }
 
-var client = new Twitter({
+var twitClient = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
   consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
   access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-var stream = client.stream('statuses/filter', {follow: TWITTER_ID});
+var polisClient = new Swagger({
+  url: 'https://patcon.github.io/polis-api-spec/swagger.json',
+  success: function() {},
+  authorizations: {
+    api_key: new Swagger.ApiKeyAuthorization('Authorization', POLIS_API_KEY, 'header'),
+  },
+});
+
+var stream = twitClient.stream('statuses/filter', {follow: TWITTER_ID});
 stream.on('data', function(event) {
   if(isStandardTweet(event) && isTrumpTweet(event)) {
-    var newTweet = {
-      status: generateTweet(event.user.screen_name, makeFakeId()),
-      in_reply_to_status_id: event.id_str,
+    var newPolisConvo = {
+      topic: event.text,
+      description: 'Some bit of explanatory **markdown**! _Italics!_',
     };
-    client.post('statuses/update', newTweet, function(error, tweet, response) {
-      if(error) throw error;
-      console.log('Successfully tweeted: ' + tweet.text);
+    polisClient.Conversations.createConversation(newPolisConvo, function(success) {
+        var newTweet = {
+          status: generateTweet(event.user.screen_name, success.obj.conversation_id),
+          in_reply_to_status_id: event.id_str,
+        };
+        twitClient.post('statuses/update', newTweet, function(error, tweet, response) {
+          if(error) throw error;
+          console.log('Successfully tweeted: ' + tweet.text);
+        });
+    }, function(error) {
+      throw 'Oops!  failed with message: ' + error.statusText;
     });
   }
 });
