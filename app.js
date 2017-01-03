@@ -5,7 +5,7 @@ _ = require('lodash');
 var app = express();
 
 // For @RealDonaldTrump
-const TRUMP_ID=25073877
+const TRUMP_ID=25073877;
 const TWITTER_ID = parseInt(process.env.TWITTER_NUM_ID) || TRUMP_ID;
 
 const isStandardTweet = _.conforms({
@@ -30,7 +30,7 @@ stream.on('data', function(event) {
     var newTweet = {
       status: generateTweet(event.user.screen_name, makeFakeId()),
       in_reply_to_status_id: event.id_str,
-    }
+    };
     client.post('statuses/update', newTweet, function(error, tweet, response) {
       if(error) throw error;
       console.log('Successfully tweeted: ' + tweet.text);
@@ -42,14 +42,14 @@ stream.on('error', function(error) {
   throw error;
 });
 
-const TWEET_TEMPLATE = "@{} Hey all, this might be a better way to discuss our differences on this tweet: https://pol.is/{} Beep-boop. I'm a bot."
+const TWEET_TEMPLATE = "@{} Hey all, this might be a better way to discuss our differences on this tweet: https://pol.is/{} Beep-boop. I'm a bot.";
 
 String.prototype.format = function () {
   var i = 0, args = arguments;
   return this.replace(/{}/g, function () {
     return typeof args[i] != 'undefined' ? args[i++] : '';
   });
-}
+};
 
 function generateTweet(twitterHandle, polisConversationId) {
   return TWEET_TEMPLATE.format(twitterHandle, polisConversationId);
@@ -72,5 +72,5 @@ app.get('/', function(req, res) {
 
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
-  console.log('App listening on port ' + port)
+  console.log('App listening on port ' + port);
 });
