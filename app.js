@@ -27,7 +27,14 @@ var client = new Twitter({
 var stream = client.stream('statuses/filter', {follow: TWITTER_ID});
 stream.on('data', function(event) {
   if(isStandardTweet(event) && isTrumpTweet(event)) {
-    console.log(event.text);
+    var newTweet = {
+      status: generateTweet(event.user.screen_name, makeFakeId()),
+      in_reply_to_status_id: event.id_str,
+    }
+    client.post('statuses/update', newTweet, function(error, tweet, response) {
+      if(error) throw error;
+      console.log('Successfully tweeted: ' + tweet.text);
+    });
   }
 });
 
@@ -35,7 +42,7 @@ stream.on('error', function(error) {
   throw error;
 });
 
-const TWEET_TEMPLATE = "@RealDonaldTrump Hey all, this might be a better way to discuss our differences on this tweet: https://pol.is/{} Beep-boop. I'm a bot."
+const TWEET_TEMPLATE = "@{} Hey all, this might be a better way to discuss our differences on this tweet: https://pol.is/{} Beep-boop. I'm a bot."
 
 String.prototype.format = function () {
   var i = 0, args = arguments;
@@ -44,8 +51,8 @@ String.prototype.format = function () {
   });
 }
 
-function generateTweet(conversationId) {
-  return TWEET_TEMPLATE.format(conversationId);
+function generateTweet(twitterHandle, polisConversationId) {
+  return TWEET_TEMPLATE.format(twitterHandle, polisConversationId);
 }
 
 function makeFakeId() {
