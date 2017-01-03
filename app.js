@@ -23,7 +23,7 @@ var client = new Twitter({
 var stream = client.stream('statuses/filter', {follow: TWITTER_ID});
 stream.on('data', function(event) {
   if(isStandardTweet(event) && isTrumpTweet(event)) {
-    console.log(event);
+    console.log(event.text);
   }
 });
 
