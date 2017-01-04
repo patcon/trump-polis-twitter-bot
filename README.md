@@ -22,7 +22,5 @@ git push heroku master
 
 ## To Do
 
-- [x] Figure out how Twitter streams work.
-- [ ] Auto-create Polis conversation.
-- [ ] Seed the conversation with several simple, universally-applicable
-  comments.
+See this project's [issue
+tracker](https://github.com/patcon/trump-polis-twitter-bot/issues).
