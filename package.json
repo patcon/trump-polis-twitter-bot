@@ -1,16 +1,16 @@
 {
-  "name": "realdonaldtrump-twitter-bot",
-  "version": "1.0.0",
+  "name": "trump-polis-twitter-bot",
+  "version": "0.0.1",
   "engines": {
     "node": "5.3.0"
   },
-  "description": "",
+  "description": "A Twitter bot to auto-create Pol.is conversations for each Donald Trump tweet.",
   "main": "app.js",
   "scripts": {
     "test": "node_modules/.bin/jshint app.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Patrick Connolly <patrick.c.connolly@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.14.0",
     "lodash": "^4.17.4",

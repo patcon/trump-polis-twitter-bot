@@ -24,3 +24,7 @@ git push heroku master
 
 See this project's [issue
 tracker](https://github.com/patcon/trump-polis-twitter-bot/issues).
+
+## Contributors
+
+Maintained by [@patcon](https://github.com/patcon/).
