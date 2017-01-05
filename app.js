@@ -8,8 +8,8 @@ _ = require('lodash');
 var app = express();
 
 // For @RealDonaldTrump
-const TRUMP_ID=25073877;
-const TWITTER_ID = parseInt(process.env.TWITTER_NUM_ID) || TRUMP_ID;
+const TRUMP_ID='25073877';
+const TWITTER_ID = process.env.TWITTER_NUM_ID || TRUMP_ID;
 const POLIS_API_KEY = process.env.POLIS_API_KEY;
 
 if (!POLIS_API_KEY) {
@@ -22,7 +22,7 @@ const isStandardTweet = _.conforms({
 });
 
 function isTrumpTweet(event) {
-  return event.user.id == TWITTER_ID;
+  return event.user.id_str == TWITTER_ID;
 }
 
 var twitClient = new Twitter({
@@ -52,14 +52,30 @@ stream.on('data', function(event) {
       description: polisDescription(),
     };
     polisClient.Conversations.createConversation(newPolisConvo, function(success) {
-        var newTweet = {
-          status: generateTweet(event.user.screen_name, success.obj.conversation_id),
-          in_reply_to_status_id: event.id_str,
+      var seedComments = require('./seedComments');
+      seedComments.forEach(function (commentText) {
+        var newComment = {
+          conversation_id: success.obj.conversation_id,
+          comment: {
+            is_seed: true,
+            txt: commentText
+          }
         };
-        twitClient.post('statuses/update', newTweet, function(error, tweet, response) {
-          if(error) throw error;
-          console.log('Successfully tweeted: ' + tweet.text);
+        polisClient.Conversations.createComment(newComment, function(success) {
+          console.log('Successfully posted comment: ' + success);
+        }, function(error){
+          console.log('Failed to post comment: ' + error.statusText);
         });
+      });
+
+      var newTweet = {
+        status: generateTweet(event.user.screen_name, success.obj.conversation_id),
+        in_reply_to_status_id: event.id_str,
+      };
+      twitClient.post('statuses/update', newTweet, function(error, tweet, response) {
+        if(error) throw error;
+        console.log('Successfully tweeted: ' + tweet.text);
+      });
     }, function(error) {
       throw 'Oops!  failed with message: ' + error.statusText;
     });
