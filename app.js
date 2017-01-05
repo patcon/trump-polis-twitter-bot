@@ -52,14 +52,14 @@ stream.on('data', function(event) {
       description: polisDescription(),
     };
     polisClient.Conversations.createConversation(newPolisConvo, function(success) {
-        var newTweet = {
-          status: generateTweet(event.user.screen_name, success.obj.conversation_id),
-          in_reply_to_status_id: event.id_str,
-        };
-        twitClient.post('statuses/update', newTweet, function(error, tweet, response) {
-          if(error) throw error;
-          console.log('Successfully tweeted: ' + tweet.text);
-        });
+      var newTweet = {
+        status: generateTweet(event.user.screen_name, success.obj.conversation_id),
+        in_reply_to_status_id: event.id_str,
+      };
+      twitClient.post('statuses/update', newTweet, function(error, tweet, response) {
+        if(error) throw error;
+        console.log('Successfully tweeted: ' + tweet.text);
+      });
     }, function(error) {
       throw 'Oops!  failed with message: ' + error.statusText;
     });
