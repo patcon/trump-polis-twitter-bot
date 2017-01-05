@@ -61,7 +61,11 @@ stream.on('data', function(event) {
             txt: commentText
           }
         };
-        polisClient.Conversations.createComment(newComment);
+        polisClient.Conversations.createComment(newComment, function(success) {
+          console.log('Successfully posted comment: ' + success);
+        }, function(error){
+          console.log('Failed to post comment: ' + error.statusText);
+        });
       });
 
       var newTweet = {
