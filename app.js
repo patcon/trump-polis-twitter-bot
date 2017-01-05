@@ -52,6 +52,18 @@ stream.on('data', function(event) {
       description: polisDescription(),
     };
     polisClient.Conversations.createConversation(newPolisConvo, function(success) {
+      var seedComments = require('./seedComments');
+      seedComments.forEach(function (commentText) {
+        var newComment = {
+          conversation_id: success.obj.conversation_id,
+          comment: {
+            is_seed: true,
+            txt: commentText
+          }
+        };
+        polisClient.Conversations.createComment(newComment);
+      });
+
       var newTweet = {
         status: generateTweet(event.user.screen_name, success.obj.conversation_id),
         in_reply_to_status_id: event.id_str,
