@@ -8,8 +8,8 @@ _ = require('lodash');
 var app = express();
 
 // For @RealDonaldTrump
-const TRUMP_ID=25073877;
-const TWITTER_ID = parseInt(process.env.TWITTER_NUM_ID) || TRUMP_ID;
+const TRUMP_ID='25073877';
+const TWITTER_ID = process.env.TWITTER_NUM_ID || TRUMP_ID;
 const POLIS_API_KEY = process.env.POLIS_API_KEY;
 
 if (!POLIS_API_KEY) {
@@ -22,7 +22,7 @@ const isStandardTweet = _.conforms({
 });
 
 function isTrumpTweet(event) {
-  return event.user.id == TWITTER_ID;
+  return event.user.id_str == TWITTER_ID;
 }
 
 var twitClient = new Twitter({
