@@ -86,7 +86,7 @@ stream.on('error', function(error) {
   throw error;
 });
 
-const TWEET_TEMPLATE = "@{} Hey all, this might be a better way to discuss our differences on this tweet: https://pol.is/{} Beep-boop. I'm a bot.";
+const TWEET_TEMPLATE = "Hey all, this might be a better way to discuss this tweet: https://pol.is/{} Pls RT and follow! Beep-boop. I'm a bot.";
 
 String.prototype.format = function () {
   var i = 0, args = arguments;
@@ -96,7 +96,7 @@ String.prototype.format = function () {
 };
 
 function generateTweet(twitterHandle, polisConversationId) {
-  return TWEET_TEMPLATE.format(twitterHandle, polisConversationId);
+  return ('@{} ' + TWEET_TEMPLATE).format(twitterHandle, polisConversationId);
 }
 
 function makeFakeId() {
